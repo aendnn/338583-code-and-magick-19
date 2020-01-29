@@ -9,6 +9,7 @@ var similarList = document.querySelector('.setup-similar-list');
 var template = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
 var fragment = document.createDocumentFragment();
 
+// получение случайного числа
 var getRandomElement = function (min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -44,6 +45,7 @@ var wizards = [
 
 document.querySelector('.setup').classList.remove('hidden');
 
+// отрисовка мага
 var renderWizard = function (wizard) {
   var wizardElement = template.cloneNode(true);
 

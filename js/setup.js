@@ -53,17 +53,17 @@ var getRandomIndex = function (min, max) {
 };
 
 // возвращает случайный цвет
-var getColor = function (colors) {
-  return colors[getRandomIndex(0, WIZARD_COAT_COLORS.length)];
+var getRandomThing = function (array) {
+  return array[getRandomIndex(0, array.length)];
 };
 
 // добавляет магов в массив
 var getWizards = function (array, quantity) {
   for (var i = 0; i < quantity; i++) {
     var wizardNew = {
-      name: WIZARD_NAMES[getRandomIndex(0, WIZARD_NAMES.length)] + ' ' + WIZARD_SURNAMES[getRandomIndex(0, WIZARD_SURNAMES.length)],
-      coatColor: getColor(WIZARD_COAT_COLORS),
-      eyesColor: getColor(WIZARD_EYES_COLORS)
+      name: getRandomThing(WIZARD_NAMES) + ' ' + getRandomThing(WIZARD_SURNAMES),
+      coatColor: getRandomThing(WIZARD_COAT_COLORS),
+      eyesColor: getRandomThing(WIZARD_EYES_COLORS)
     };
     array.push(wizardNew);
   }

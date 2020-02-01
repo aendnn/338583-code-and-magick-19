@@ -52,7 +52,7 @@ var getRandomIndex = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 };
 
-// возвращает случайный цвет
+// возвращает случайный элемент массива
 var getRandomThing = function (array) {
   return array[getRandomIndex(0, array.length)];
 };

@@ -57,7 +57,6 @@ var ESC_KEY = 'Escape';
 var ENTER_KEY = 'Enter';
 
 var MIN_NAME_LENGTH = 2;
-var MAX_NAME_LENGTH = 25;
 
 var setup = document.querySelector('.setup');
 var setupOpen = document.querySelector('.setup-open');
@@ -111,7 +110,7 @@ setupClose.addEventListener('keydown', function (evt) {
   }
 });
 
-userNameInput.addEventListener('invalid', function (evt) {
+userNameInput.addEventListener('invalid', function () {
   if (userNameInput.validity.tooShort) {
     userNameInput.setCustomValidity('Имя должно состоять минимум из 2-х символов');
   } else if (userNameInput.validity.tooLong) {
@@ -192,8 +191,7 @@ var changeWizard = function (input, element, array) {
 
   if (element === wizardFireball) {
     element.style.backgroundColor = randomColor;
-  }
-  else {
+  } else {
     element.style.fill = randomColor;
   }
 

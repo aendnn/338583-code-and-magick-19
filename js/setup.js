@@ -39,11 +39,102 @@ var WIZARD_EYES_COLORS = [
   'green'
 ];
 
+var WIZARD_FIREBALL_COLORS = [
+  '#ee4830',
+  '#30a8ee',
+  '#5ce6c0',
+  '#e848d5',
+  '#e6e848'
+];
+
 var TOTAL_WIZARDS = 4;
 var wizards = [];
 
 var similarList = document.querySelector('.setup-similar-list');
 var template = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
+
+var ESC_KEY = 'Escape';
+var ENTER_KEY = 'Enter';
+
+var MIN_NAME_LENGTH = 2;
+var MAX_NAME_LENGTH = 25;
+
+var setup = document.querySelector('.setup');
+var setupOpen = document.querySelector('.setup-open');
+var setupClose = setup.querySelector('.setup-close');
+
+var userNameInput = setup.querySelector('.setup-user-name');
+var coatColorInput = setup.querySelector('input[name=coat-color]');
+var eyesColorInput = setup.querySelector('input[name=eyes-color]');
+var fireballColorInput = setup.querySelector('input[name=fireball-color]');
+
+var wizardCoat = setup.querySelector('.wizard-coat');
+var wizardEyes = setup.querySelector('.wizard-eyes');
+var wizardFireball = setup.querySelector('.setup-fireball-wrap');
+
+// при клике на esc вызывается ф-ция закрытия окна
+var closePopapOnEsc = function (evt) {
+  if (evt.key === ESC_KEY && document.activeElement !== userNameInput) {
+    closePopup(setup);
+  }
+};
+
+// закрытие окна
+var closePopup = function (window) {
+  window.classList.add('hidden');
+  document.removeEventListener('keydown', closePopapOnEsc);
+};
+
+// открытие окна
+var openPopup = function (window) {
+  window.classList.remove('hidden');
+  document.addEventListener('keydown', closePopapOnEsc);
+};
+
+setupOpen.addEventListener('click', function () {
+  openPopup(setup);
+});
+
+setupOpen.addEventListener('keydown', function (evt) {
+  if (evt.key === ENTER_KEY) {
+    openPopup(setup);
+  }
+});
+
+setupClose.addEventListener('click', function () {
+  closePopup(setup);
+});
+
+setupClose.addEventListener('keydown', function (evt) {
+  if (evt.key === ENTER_KEY) {
+    closePopup(setup);
+  }
+});
+
+userNameInput.addEventListener('invalid', function (evt) {
+  if (userNameInput.validity.tooShort) {
+    userNameInput.setCustomValidity('Имя должно состоять минимум из 2-х символов');
+  } else if (userNameInput.validity.tooLong) {
+    userNameInput.setCustomValidity('Имя не должно превышать 25-ти символов');
+  } else if (userNameInput.validity.valueMissing) {
+    userNameInput.setCustomValidity('Обязательное поле');
+  } else {
+    userNameInput.setCustomValidity('');
+  }
+});
+
+userNameInput.addEventListener('input', function (evt) {
+  var target = evt.target;
+  if (target.value.length < MIN_NAME_LENGTH) {
+    target.setCustomValidity(
+        'Имя должно состоять минимум из ' +
+        MIN_NAME_LENGTH +
+        '-х символов'
+    );
+  } else {
+    target.setCustomValidity('');
+  }
+});
 
 // получение случайного индекса элемента
 var getRandomIndex = function (min, max) {
@@ -95,5 +186,32 @@ var generateWizards = function (array) {
 getWizards(wizards, TOTAL_WIZARDS);
 generateWizards(wizards);
 
-document.querySelector('.setup').classList.remove('hidden');
+// изменяет цвет элементов мага по клику
+var changeWizard = function (input, element, array) {
+  var randomColor = getRandomThing(array);
+
+  if (element === wizardFireball) {
+    element.style.backgroundColor = randomColor;
+  }
+  else {
+    element.style.fill = randomColor;
+  }
+
+  input.value = randomColor;
+
+  return input;
+};
+
+wizardCoat.addEventListener('click', function () {
+  changeWizard(coatColorInput, wizardCoat, WIZARD_COAT_COLORS);
+});
+
+wizardEyes.addEventListener('click', function () {
+  changeWizard(eyesColorInput, wizardEyes, WIZARD_EYES_COLORS);
+});
+
+wizardFireball.addEventListener('click', function () {
+  changeWizard(fireballColorInput, wizardFireball, WIZARD_FIREBALL_COLORS);
+});
+
 document.querySelector('.setup-similar').classList.remove('hidden');

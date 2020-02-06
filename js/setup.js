@@ -57,6 +57,7 @@ var ESC_KEY = 'Escape';
 var ENTER_KEY = 'Enter';
 
 var MIN_NAME_LENGTH = 2;
+var MAX_NAME_LENGTH = 25;
 
 var setup = document.querySelector('.setup');
 var setupOpen = document.querySelector('.setup-open');
@@ -72,45 +73,46 @@ var wizardEyes = setup.querySelector('.wizard-eyes');
 var wizardFireball = setup.querySelector('.setup-fireball-wrap');
 
 // при клике на esc вызывается ф-ция закрытия окна
-var closePopapOnEsc = function (evt) {
+var closePopupOnEsc = function (evt) {
   if (evt.key === ESC_KEY && document.activeElement !== userNameInput) {
     closePopup(setup);
   }
 };
 
 // закрытие окна
-var closePopup = function (window) {
-  window.classList.add('hidden');
-  document.removeEventListener('keydown', closePopapOnEsc);
+var closePopup = function () {
+  setup.classList.add('hidden');
+  document.removeEventListener('keydown', closePopupOnEsc);
 };
 
 // открытие окна
-var openPopup = function (window) {
-  window.classList.remove('hidden');
-  document.addEventListener('keydown', closePopapOnEsc);
+var popupClickHandler = function () {
+  setup.classList.remove('hidden');
+  document.addEventListener('keydown', closePopupOnEsc);
 };
 
 setupOpen.addEventListener('click', function () {
-  openPopup(setup);
+  popupClickHandler(setup);
 });
 
 setupOpen.addEventListener('keydown', function (evt) {
   if (evt.key === ENTER_KEY) {
-    openPopup(setup);
+    popupClickHandler();
   }
 });
 
 setupClose.addEventListener('click', function () {
-  closePopup(setup);
+  closePopup();
 });
 
 setupClose.addEventListener('keydown', function (evt) {
   if (evt.key === ENTER_KEY) {
-    closePopup(setup);
+    closePopup();
   }
 });
 
-userNameInput.addEventListener('invalid', function () {
+// проверка валидации формы
+var checkValidity = function () {
   if (userNameInput.validity.tooShort) {
     userNameInput.setCustomValidity('Имя должно состоять минимум из 2-х символов');
   } else if (userNameInput.validity.tooLong) {
@@ -120,9 +122,10 @@ userNameInput.addEventListener('invalid', function () {
   } else {
     userNameInput.setCustomValidity('');
   }
-});
+};
 
-userNameInput.addEventListener('input', function (evt) {
+// проверяет ввод имени пользователя
+var checkInput = function (evt) {
   var target = evt.target;
   if (target.value.length < MIN_NAME_LENGTH) {
     target.setCustomValidity(
@@ -130,10 +133,19 @@ userNameInput.addEventListener('input', function (evt) {
         MIN_NAME_LENGTH +
         '-х символов'
     );
+  } else if (target.value.length > MAX_NAME_LENGTH) {
+    target.setCustomValidity(
+        'Имя должно состоять максимум из ' +
+        MAX_NAME_LENGTH +
+        '-х символов'
+    );
   } else {
     target.setCustomValidity('');
   }
-});
+};
+
+userNameInput.addEventListener('invalid', checkValidity);
+userNameInput.addEventListener('input', checkInput);
 
 // получение случайного индекса элемента
 var getRandomIndex = function (min, max) {

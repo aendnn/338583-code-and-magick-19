@@ -72,42 +72,42 @@ var wizardCoat = setup.querySelector('.wizard-coat');
 var wizardEyes = setup.querySelector('.wizard-eyes');
 var wizardFireball = setup.querySelector('.setup-fireball-wrap');
 
+// закрытие окна
+var onButtonCloseClick = function () {
+  setup.classList.add('hidden');
+  document.removeEventListener('keydown', onKeydownClick);
+};
+
 // при клике на esc вызывается ф-ция закрытия окна
-var closePopupOnEsc = function (evt) {
+var onKeydownClick = function (evt) {
   if (evt.key === ESC_KEY && document.activeElement !== userNameInput) {
-    closePopup(setup);
+    onButtonCloseClick();
   }
 };
 
-// закрытие окна
-var closePopup = function () {
-  setup.classList.add('hidden');
-  document.removeEventListener('keydown', closePopupOnEsc);
-};
-
 // открытие окна
-var popupClickHandler = function () {
+var onButtonOpenClick = function () {
   setup.classList.remove('hidden');
-  document.addEventListener('keydown', closePopupOnEsc);
+  document.addEventListener('keydown', onKeydownClick);
 };
 
 setupOpen.addEventListener('click', function () {
-  popupClickHandler(setup);
+  onButtonOpenClick();
 });
 
 setupOpen.addEventListener('keydown', function (evt) {
   if (evt.key === ENTER_KEY) {
-    popupClickHandler();
+    onButtonOpenClick();
   }
 });
 
 setupClose.addEventListener('click', function () {
-  closePopup();
+  onButtonCloseClick();
 });
 
 setupClose.addEventListener('keydown', function (evt) {
   if (evt.key === ENTER_KEY) {
-    closePopup();
+    onButtonCloseClick();
   }
 });
 
@@ -128,17 +128,9 @@ var checkValidity = function () {
 var checkInput = function (evt) {
   var target = evt.target;
   if (target.value.length < MIN_NAME_LENGTH) {
-    target.setCustomValidity(
-        'Имя должно состоять минимум из ' +
-        MIN_NAME_LENGTH +
-        '-х символов'
-    );
+    target.setCustomValidity('Имя должно состоять минимум из ' + MIN_NAME_LENGTH + '-х символов');
   } else if (target.value.length > MAX_NAME_LENGTH) {
-    target.setCustomValidity(
-        'Имя должно состоять максимум из ' +
-        MAX_NAME_LENGTH +
-        '-х символов'
-    );
+    target.setCustomValidity('Имя должно состоять максимум из ' + MAX_NAME_LENGTH + '-х символов');
   } else {
     target.setCustomValidity('');
   }

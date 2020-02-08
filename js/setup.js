@@ -75,11 +75,11 @@ var wizardFireball = setup.querySelector('.setup-fireball-wrap');
 // закрытие окна
 var onButtonCloseClick = function () {
   setup.classList.add('hidden');
-  document.removeEventListener('keydown', onKeydownClick);
+  document.removeEventListener('keydown', onDocumentKeydown);
 };
 
 // при клике на esc вызывается ф-ция закрытия окна
-var onKeydownClick = function (evt) {
+var onDocumentKeydown = function (evt) {
   if (evt.key === ESC_KEY && document.activeElement !== userNameInput) {
     onButtonCloseClick();
   }
@@ -88,7 +88,7 @@ var onKeydownClick = function (evt) {
 // открытие окна
 var onButtonOpenClick = function () {
   setup.classList.remove('hidden');
-  document.addEventListener('keydown', onKeydownClick);
+  document.addEventListener('keydown', onDocumentKeydown);
 };
 
 setupOpen.addEventListener('click', function () {
@@ -112,7 +112,7 @@ setupClose.addEventListener('keydown', function (evt) {
 });
 
 // проверка валидации формы
-var checkValidity = function () {
+var onUserNameInputInvalid = function () {
   if (userNameInput.validity.tooShort) {
     userNameInput.setCustomValidity('Имя должно состоять минимум из 2-х символов');
   } else if (userNameInput.validity.tooLong) {
@@ -125,7 +125,7 @@ var checkValidity = function () {
 };
 
 // проверяет ввод имени пользователя
-var checkInput = function (evt) {
+var onUserNameInput = function (evt) {
   var target = evt.target;
   if (target.value.length < MIN_NAME_LENGTH) {
     target.setCustomValidity('Имя должно состоять минимум из ' + MIN_NAME_LENGTH + '-х символов');
@@ -136,8 +136,8 @@ var checkInput = function (evt) {
   }
 };
 
-userNameInput.addEventListener('invalid', checkValidity);
-userNameInput.addEventListener('input', checkInput);
+userNameInput.addEventListener('invalid', onUserNameInputInvalid);
+userNameInput.addEventListener('input', onUserNameInput);
 
 // получение случайного индекса элемента
 var getRandomIndex = function (min, max) {
@@ -200,8 +200,6 @@ var changeWizard = function (input, element, array) {
   }
 
   input.value = randomColor;
-
-  return input;
 };
 
 wizardCoat.addEventListener('click', function () {

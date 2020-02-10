@@ -63,81 +63,67 @@ var setup = document.querySelector('.setup');
 var setupOpen = document.querySelector('.setup-open');
 var setupClose = setup.querySelector('.setup-close');
 
-var userNameInput = setup.querySelector('.setup-user-name');
-var coatColorInput = setup.querySelector('input[name=coat-color]');
-var eyesColorInput = setup.querySelector('input[name=eyes-color]');
-var fireballColorInput = setup.querySelector('input[name=fireball-color]');
+var userNameField = setup.querySelector('.setup-user-name');
+var coatColorField = setup.querySelector('input[name=coat-color]');
+var eyesColorField = setup.querySelector('input[name=eyes-color]');
+var fireballColorField = setup.querySelector('input[name=fireball-color]');
 
 var wizardCoat = setup.querySelector('.wizard-coat');
 var wizardEyes = setup.querySelector('.wizard-eyes');
 var wizardFireball = setup.querySelector('.setup-fireball-wrap');
 
 // закрытие окна
-var onButtonCloseClick = function () {
+var onSetupCloseClick = function () {
   setup.classList.add('hidden');
-  document.removeEventListener('keydown', onDocumentKeydown);
-};
-
-// при клике на esc вызывается ф-ция закрытия окна
-var onDocumentKeydown = function (evt) {
-  if (evt.key === ESC_KEY && document.activeElement !== userNameInput) {
-    onButtonCloseClick();
-  }
+  document.removeEventListener('keydown', onEscKeydownClick);
 };
 
 // открытие окна
-var onButtonOpenClick = function () {
+var onSetupOpenClick = function () {
   setup.classList.remove('hidden');
-  document.addEventListener('keydown', onDocumentKeydown);
+  document.addEventListener('keydown', onEscKeydownClick);
 };
 
-setupOpen.addEventListener('click', function () {
-  onButtonOpenClick();
-});
-
-setupOpen.addEventListener('keydown', function (evt) {
-  if (evt.key === ENTER_KEY) {
-    onButtonOpenClick();
+// при клике на esc вызывается ф-ция закрытия окна
+var onEscKeydownClick = function (evt) {
+  if (evt.key === ESC_KEY && document.activeElement !== userNameField) {
+    onSetupCloseClick();
   }
-});
+};
 
-setupClose.addEventListener('click', function () {
-  onButtonCloseClick();
-});
-
-setupClose.addEventListener('keydown', function (evt) {
+// при клике на enter окно закрывается либо открывается
+var onEnterKeydownClick = function (evt) {
   if (evt.key === ENTER_KEY) {
-    onButtonCloseClick();
+    if (setup.classList.contains('hidden')) {
+      onSetupOpenClick();
+    } else {
+      onSetupCloseClick();
+    }
   }
-});
+};
+
+setupOpen.addEventListener('click', onSetupOpenClick);
+setupOpen.addEventListener('keydown', onEnterKeydownClick);
+setupClose.addEventListener('click', onSetupCloseClick);
+setupClose.addEventListener('keydown', onEnterKeydownClick);
 
 // проверка валидации формы
-var onUserNameInputInvalid = function () {
-  if (userNameInput.validity.tooShort) {
-    userNameInput.setCustomValidity('Имя должно состоять минимум из 2-х символов');
-  } else if (userNameInput.validity.tooLong) {
-    userNameInput.setCustomValidity('Имя не должно превышать 25-ти символов');
-  } else if (userNameInput.validity.valueMissing) {
-    userNameInput.setCustomValidity('Обязательное поле');
-  } else {
-    userNameInput.setCustomValidity('');
-  }
-};
-
-// проверяет ввод имени пользователя
-var onUserNameInput = function (evt) {
+var onUserNameInputInvalid = function (evt) {
   var target = evt.target;
-  if (target.value.length < MIN_NAME_LENGTH) {
+
+  if (target.value.length < MIN_NAME_LENGTH || target.validity.tooShort) {
     target.setCustomValidity('Имя должно состоять минимум из ' + MIN_NAME_LENGTH + '-х символов');
-  } else if (target.value.length > MAX_NAME_LENGTH) {
+  } else if (target.value.length > MAX_NAME_LENGTH || target.validity.tooLong) {
     target.setCustomValidity('Имя должно состоять максимум из ' + MAX_NAME_LENGTH + '-х символов');
+  } else if (target.validity.valueMissing) {
+    target.setCustomValidity('Обязательное поле');
   } else {
     target.setCustomValidity('');
   }
 };
 
-userNameInput.addEventListener('invalid', onUserNameInputInvalid);
-userNameInput.addEventListener('input', onUserNameInput);
+userNameField.addEventListener('invalid', onUserNameInputInvalid);
+userNameField.addEventListener('input', onUserNameInputInvalid);
 
 // получение случайного индекса элемента
 var getRandomIndex = function (min, max) {
@@ -203,15 +189,15 @@ var changeWizard = function (input, element, array) {
 };
 
 wizardCoat.addEventListener('click', function () {
-  changeWizard(coatColorInput, wizardCoat, WIZARD_COAT_COLORS);
+  changeWizard(coatColorField, wizardCoat, WIZARD_COAT_COLORS);
 });
 
 wizardEyes.addEventListener('click', function () {
-  changeWizard(eyesColorInput, wizardEyes, WIZARD_EYES_COLORS);
+  changeWizard(eyesColorField, wizardEyes, WIZARD_EYES_COLORS);
 });
 
 wizardFireball.addEventListener('click', function () {
-  changeWizard(fireballColorInput, wizardFireball, WIZARD_FIREBALL_COLORS);
+  changeWizard(fireballColorField, wizardFireball, WIZARD_FIREBALL_COLORS);
 });
 
 document.querySelector('.setup-similar').classList.remove('hidden');

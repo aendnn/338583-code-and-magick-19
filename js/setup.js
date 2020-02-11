@@ -124,6 +124,13 @@ var onUserNameFieldInvalid = function (evt) {
   validateField(target);
 };
 
+// проверка валидации формы
+var onUserNameFieldInput = function (evt) {
+  var target = evt.target;
+
+  validateField(target);
+};
+
 // получение случайного индекса элемента
 var getRandomIndex = function (min, max) {
   min = Math.ceil(min);
@@ -211,6 +218,6 @@ setupOpen.addEventListener('keydown', onSetupOpenKeydown);
 setupClose.addEventListener('click', onSetupCloseClick);
 setupClose.addEventListener('keydown', onSetupCloseKeydown);
 userNameField.addEventListener('invalid', onUserNameFieldInvalid);
-userNameField.addEventListener('input', onUserNameFieldInvalid);
+userNameField.addEventListener('input', onUserNameFieldInput);
 
 document.querySelector('.setup-similar').classList.remove('hidden');

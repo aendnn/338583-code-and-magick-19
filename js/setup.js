@@ -75,55 +75,54 @@ var wizardFireball = setup.querySelector('.setup-fireball-wrap');
 // закрытие окна
 var onSetupCloseClick = function () {
   setup.classList.add('hidden');
-  document.removeEventListener('keydown', onEscKeydownClick);
+  document.removeEventListener('keydown', onDocumentKeydown);
 };
 
 // открытие окна
 var onSetupOpenClick = function () {
   setup.classList.remove('hidden');
-  document.addEventListener('keydown', onEscKeydownClick);
+  document.addEventListener('keydown', onDocumentKeydown);
 };
 
 // при клике на esc вызывается ф-ция закрытия окна
-var onEscKeydownClick = function (evt) {
+var onDocumentKeydown = function (evt) {
   if (evt.key === ESC_KEY && document.activeElement !== userNameField) {
     onSetupCloseClick();
   }
 };
 
 // при клике на enter окно закрывается либо открывается
-var onEnterKeydownClick = function (evt) {
+var onSetupOpenKeydown = function (evt) {
   if (evt.key === ENTER_KEY) {
-    if (setup.classList.contains('hidden')) {
-      onSetupOpenClick();
-    } else {
-      onSetupCloseClick();
-    }
+    onSetupOpenClick();
   }
 };
 
-setupOpen.addEventListener('click', onSetupOpenClick);
-setupOpen.addEventListener('keydown', onEnterKeydownClick);
-setupClose.addEventListener('click', onSetupCloseClick);
-setupClose.addEventListener('keydown', onEnterKeydownClick);
+// при клике на enter окно закрывается либо открывается
+var onSetupCloseKeydown = function (evt) {
+  if (evt.key === ENTER_KEY) {
+    onSetupCloseClick();
+  }
+};
+
+var validateField = function (input) {
+  if (input.value.length < MIN_NAME_LENGTH || input.validity.tooShort) {
+    input.setCustomValidity('Имя должно состоять минимум из ' + MIN_NAME_LENGTH + '-х символов');
+  } else if (input.value.length > MAX_NAME_LENGTH || input.validity.tooLong) {
+    input.setCustomValidity('Имя должно состоять максимум из ' + MAX_NAME_LENGTH + '-х символов');
+  } else if (input.validity.valueMissing) {
+    input.setCustomValidity('Обязательное поле');
+  } else {
+    input.setCustomValidity('');
+  }
+};
 
 // проверка валидации формы
-var onUserNameInputInvalid = function (evt) {
+var onUserNameFieldInvalid = function (evt) {
   var target = evt.target;
 
-  if (target.value.length < MIN_NAME_LENGTH || target.validity.tooShort) {
-    target.setCustomValidity('Имя должно состоять минимум из ' + MIN_NAME_LENGTH + '-х символов');
-  } else if (target.value.length > MAX_NAME_LENGTH || target.validity.tooLong) {
-    target.setCustomValidity('Имя должно состоять максимум из ' + MAX_NAME_LENGTH + '-х символов');
-  } else if (target.validity.valueMissing) {
-    target.setCustomValidity('Обязательное поле');
-  } else {
-    target.setCustomValidity('');
-  }
+  validateField(target);
 };
-
-userNameField.addEventListener('invalid', onUserNameInputInvalid);
-userNameField.addEventListener('input', onUserNameInputInvalid);
 
 // получение случайного индекса элемента
 var getRandomIndex = function (min, max) {
@@ -188,16 +187,30 @@ var changeWizard = function (input, element, array) {
   input.value = randomColor;
 };
 
-wizardCoat.addEventListener('click', function () {
+// смена цвета по клику на пальто
+var onWizardCoatClick = function () {
   changeWizard(coatColorField, wizardCoat, WIZARD_COAT_COLORS);
-});
+};
 
-wizardEyes.addEventListener('click', function () {
+// смена цвета глаз по клику
+var onWizardEyesClick = function () {
   changeWizard(eyesColorField, wizardEyes, WIZARD_EYES_COLORS);
-});
+};
 
-wizardFireball.addEventListener('click', function () {
+// смена цвета фаерболла по клику
+var onWizardFireballClick = function () {
   changeWizard(fireballColorField, wizardFireball, WIZARD_FIREBALL_COLORS);
-});
+};
+
+wizardCoat.addEventListener('click', onWizardCoatClick);
+wizardEyes.addEventListener('click', onWizardEyesClick);
+wizardFireball.addEventListener('click', onWizardFireballClick);
+
+setupOpen.addEventListener('click', onSetupOpenClick);
+setupOpen.addEventListener('keydown', onSetupOpenKeydown);
+setupClose.addEventListener('click', onSetupCloseClick);
+setupClose.addEventListener('keydown', onSetupCloseKeydown);
+userNameField.addEventListener('invalid', onUserNameFieldInvalid);
+userNameField.addEventListener('input', onUserNameFieldInvalid);
 
 document.querySelector('.setup-similar').classList.remove('hidden');
